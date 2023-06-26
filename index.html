@@ -1,12 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test</title>
+  <title>Reconhecimento de Fala</title>
 </head>
 <body>
-    <textarea name="" id="textarea" cols="30" rows="10"></textarea>
-    <script src="./main.js"></script>
+  <h1>Reconhecimento de Fala</h1>
+  <button onclick="startListening()">Iniciar</button>
+  <button onclick="stopListening()">Parar</button>
+  <textarea id="output" rows="10" cols="50"></textarea>
+  <h2>Histórico:</h2>
+  <ul id="history"></ul>
+
+  <script>
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition || window.mozSpeechRecognition || window.msSpeechRecognition)();
+
+    recognition.lang = 'pt-BR'; // Define o idioma para o reconhecimento de fala
+
+    let history = [];
+
+    recognition.onresult = function(event) {
+      const transcript = event.results[event.results.length - 1][0].transcript;
+      const outputTextarea = document.getElementById('output');
+      const historyList = document.getElementById('history');
+
+      outputTextarea.value += transcript + '\n';
+      history.push(transcript);
+      historyList.innerHTML = '';
+
+      for (let i = 0; i < history.length; i++) {
+        const listItem = document.createElement('li');
+        listItem.textContent = history[i];
+        historyList.appendChild(listItem);
+      }
+    };
+
+    function startListening() {
+      recognition.start();
+    }
+
+    function stopListening() {
+      recognition.stop();
+    }
+  </script>
 </body>
 </html>
